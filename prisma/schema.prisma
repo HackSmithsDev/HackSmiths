@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+// ------------------------------------------------------
+// ENUMS
+// ------------------------------------------------------
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REMOVED
+}
+
+enum ProjectStatus {
+  IN_PROGRESS
+  COMPLETED
+  ARCHIVED
+}
+
+// ------------------------------------------------------
+// CORE MODELS
+// ------------------------------------------------------
+
+model OrganizationUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // Hashed with bcrypt / argon2
+  name      String?
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("organization_users")
+}
+
+model Application {
+  id                  String            @id @default(cuid())
+  email               String            // Verified during Step 1 of /application
+  fullName            String
+  branchAndYear       String            // e.g. "B.Tech CSE - 1st Year"
+  phone               String
+  primaryDomain       String            // e.g. "Frontend", "AI/ML", "Backend"
+  skills              String[]          // Array of skills e.g. ["Next.js", "Python"]
+  projectsDescription String            @db.Text
+  githubUrl           String?
+  portfolioUrl        String?
+  linkedinUrl         String?
+  experience          String?           @db.Text
+  hackathonExperience String?           @db.Text
+  availability        String            // e.g. "10-15 hrs/week"
+  whyJoin             String            @db.Text
+  status              ApplicationStatus @default(PENDING)
+  notes               String?           @db.Text // Internal admin notes during review
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@map("applications")
+}
+
+// ------------------------------------------------------
+// CONTENT MODELS (Can be DB-driven or initially seeded)
+// ------------------------------------------------------
+
+model Project {
+  id          String        @id @default(cuid())
+  slug        String        @unique // For /projects/[slug]
+  title       String
+  coverImage  String
+  shortDesc   String        @db.Text
+  problem     String        @db.Text
+  solution    String        @db.Text
+  technologies String[]
+  category    String        // e.g. "Web App", "AI/ML", "Client Work"
+  status      ProjectStatus @default(IN_PROGRESS)
+  githubUrl   String?
+  liveUrl     String?
+  featured    Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("projects")
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @db.Text
+  category  String   // e.g. "Recruitment", "Hackathon", "Update"
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("announcements")
+}
+
+
+model AdminConfig {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_configs")
+}
