@@ -3,12 +3,12 @@ import { prisma } from '@/lib/prisma';
 import { ApplicationStatus } from '@/generated/prisma';
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export async function PATCH({ params }: RouteParams) {
+export async function PATCH(_request: Request, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const existing = await prisma.application.findUnique({
       where: { id },

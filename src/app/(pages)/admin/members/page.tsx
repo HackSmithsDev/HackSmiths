@@ -1,6 +1,6 @@
 'use client';
 
-import { Users, Search, ShieldCheck, Mail, ArrowUpRight } from 'lucide-react';
+import { Users, ShieldCheck } from 'lucide-react';
 
 interface Member {
   id: string;

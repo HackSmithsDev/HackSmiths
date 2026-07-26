@@ -3,18 +3,16 @@ import { prisma } from '@/lib/prisma';
 import { ApplicationStatus } from '@/generated/prisma';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 /**
  * GET /api/members/[id]
  * Fetch single member / application by ID
  */
-export async function GET({ params }: RouteParams) {
+export async function GET(_request: Request, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const application = await prisma.application.findUnique({
       where: { id },
@@ -43,7 +41,7 @@ export async function GET({ params }: RouteParams) {
  */
 export async function PATCH(request: Request, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     const {

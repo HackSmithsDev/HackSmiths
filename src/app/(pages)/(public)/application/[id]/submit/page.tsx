@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { CheckCircle2, Home, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, Home} from 'lucide-react';
 
 export default function SubmitSuccessPage({ params }: { params: { id: string } }) {
   const router = useRouter();

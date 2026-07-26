@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, Users, Shield, Mail, Calendar, Activity, KeyRound, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Users, Shield, Mail, CheckCircle2 } from 'lucide-react';
 
 export default function MemberDetailPage() {
   const params = useParams();

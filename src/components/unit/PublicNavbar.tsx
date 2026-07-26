@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import NextImage from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ArrowRight, Code2 } from 'lucide-react';
+import { Menu, X, ArrowRight} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const navLinks = [

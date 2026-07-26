@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     }
 
     // 3. OTP Valid -> Find admin record
-    const adminUser = await prisma.user.findUnique({
+    const adminUser = await prisma.organizationUser.findUnique({
       where: { email: cleanEmail },
     });
 

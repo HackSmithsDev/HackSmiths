@@ -1,16 +1,15 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useParams } from 'next/navigation';
 import { Sparkles, User, FileText, Globe, CheckCircle2, Check } from 'lucide-react';
 
 export default function ApplicationLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: { id: string };
 }) {
   const pathname = usePathname();
+  const params = useParams<{ id: string }>();
 
   const getStepStatus = (stepPath: string) => {
     if (pathname.includes(stepPath)) return 'active';
@@ -36,8 +35,14 @@ export default function ApplicationLayout({
           <Sparkles className="h-3.5 w-3.5" />
           Candidate Onboarding Pipeline
         </p>
-        <h1 className="text-2xl font-bold text-zinc-100">Candidate Application Form</h1>
-        <p className="text-[11px] text-zinc-500">Ref ID: {params.id}</p>
+
+        <h1 className="text-2xl font-bold text-zinc-100">
+          Candidate Application Form
+        </h1>
+
+        <p className="text-[11px] text-zinc-500">
+          Ref ID: {params.id}
+        </p>
       </div>
 
       {/* 4-Step Progress Bar */}
@@ -73,7 +78,12 @@ function StepIndicator({
 
   return (
     <div className={`flex items-center gap-2 p-2.5 rounded-lg border ${styles[status]}`}>
-      {status === 'completed' ? <Check className="h-4 w-4 shrink-0" /> : <Icon className="h-4 w-4 shrink-0" />}
+      {status === 'completed' ? (
+        <Check className="h-4 w-4 shrink-0" />
+      ) : (
+        <Icon className="h-4 w-4 shrink-0" />
+      )}
+
       <div>
         <p className="text-[10px] leading-tight">{stepNum}</p>
         <p className="text-[11px]">{label}</p>

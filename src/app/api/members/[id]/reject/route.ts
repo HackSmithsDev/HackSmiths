@@ -3,9 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { ApplicationStatus } from '@/generated/prisma';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 /**
@@ -14,7 +12,7 @@ interface RouteParams {
  */
 export async function PATCH(request: Request, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json().catch(() => ({}));
     const { reason, notes } = body;
 

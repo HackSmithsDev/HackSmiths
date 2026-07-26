@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Megaphone, Plus, Trash2, Edit3, Send, CheckCircle2 } from 'lucide-react';
+import { Megaphone, Plus, Trash2} from 'lucide-react';
 
 interface Announcement {
   id: string;

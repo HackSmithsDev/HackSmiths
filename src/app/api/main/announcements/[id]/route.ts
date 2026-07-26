@@ -2,12 +2,12 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export async function GET({ params }: RouteParams) {
+export async function GET(_request: Request, { params }: RouteParams) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const announcement = await prisma.announcement.findUnique({
       where: { id },
