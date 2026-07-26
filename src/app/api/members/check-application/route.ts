@@ -10,8 +10,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const existingMember = await prisma.member.findUnique({
-      where: { email },
+    const existingMember = await prisma.application.findUnique({
+      where: { id: email },
       select: { id: true, status: true },
     });
 

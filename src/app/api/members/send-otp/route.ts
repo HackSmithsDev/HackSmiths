@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { sendApplicantOtp } from "@/lib/mailer"; // Adjust to your actual path
-import { db } from "@/lib/db"; // Replace with your Prisma/Database client or Redis instance
+import { sendApplicantOtp } from "@/app/services/email/sender"; // Adjust to your actual path
+import { prisma } from "@/lib/prisma"; // Replace with your Prisma/Database client or Redis instance
+import { setOtp } from "@/lib/redis"; // Replace with your Redis client
 
 export async function POST(request: Request) {
   try {
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
     const cleanEmail = email.trim().toLowerCase();
 
     // 1. Check if an application already exists in your DB
-    const existingApp = await db.application.findFirst({
+    const existingApp = await prisma.application.findFirst({
       where: { email: cleanEmail },
     });
 
@@ -25,18 +26,7 @@ export async function POST(request: Request) {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes validity
 
     // 3. Store OTP in database or Redis (Upsert by email)
-    await db.verificationToken.upsert({
-      where: { identifier: cleanEmail },
-      update: {
-        token: otpCode,
-        expires: expiresAt,
-      },
-      create: {
-        identifier: cleanEmail,
-        token: otpCode,
-        expires: expiresAt,
-      },
-    });
+    await setOtp(cleanEmail, otpCode, expiresAt);
 
     // 4. Send email dispatch
     const isExisting = Boolean(existingApp);

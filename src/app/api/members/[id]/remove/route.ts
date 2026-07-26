@@ -6,7 +6,7 @@ interface RouteParams {
   params: { id: string };
 }
 
-export async function PATCH(request: Request, { params }: RouteParams) {
+export async function PATCH({ params }: RouteParams) {
   try {
     const { id } = params;
 

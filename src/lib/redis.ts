@@ -31,10 +31,10 @@ redis.on("error", (err) => {
  * Stores the OTP verification code mapped to the user email with an explicit expiration window.
  * @param email - Target system identifier channel
  * @param code - 6-8 digit generated alphanumeric/numeric token string
- * @param expireSeconds - Time to live in seconds (default: 600 seconds / 10 mins)
+ * @param expiresAt - Time at which the OTP expires
  */
-export async function setOtp(email: string, code: string, expireSeconds: number = 600): Promise<void> {
-  await redis.set(`otp:${email}`, code, "EX", expireSeconds);
+export async function setOtp(email: string, code: string, expiresAt: Date): Promise<void> {
+  await redis.set(`otp:${email}`, code, "EX", Math.ceil((expiresAt.getTime() - Date.now()) / 1000));
 }
 
 /**
