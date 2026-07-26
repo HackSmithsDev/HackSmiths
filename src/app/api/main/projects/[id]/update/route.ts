@@ -25,11 +25,26 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       where: { id },
       data: {
         ...(body.title !== undefined && { title: body.title }),
-        ...(body.description !== undefined && { description: body.description }),
-        ...(Array.isArray(body.techStack) && { techStack: body.techStack }),
+        ...(body.slug !== undefined && { slug: body.slug }),
+        
+        // Map frontend 'coverImage' or 'imageUrl'
+        ...((body.coverImage !== undefined || body.imageUrl !== undefined) && { 
+          coverImage: body.coverImage ?? body.imageUrl 
+        }),
+        
+        ...(body.shortDesc !== undefined && { shortDesc: body.shortDesc }),
+        ...(body.problem !== undefined && { problem: body.problem }),
+        ...(body.solution !== undefined && { solution: body.solution }),
+        ...(body.category !== undefined && { category: body.category }),
+        ...(body.status !== undefined && { status: body.status }),
+        
+        // Map frontend 'technologies' or 'techStack'
+        ...((Array.isArray(body.technologies) || Array.isArray(body.techStack)) && { 
+          technologies: body.technologies ?? body.techStack 
+        }),
+        
         ...(body.githubUrl !== undefined && { githubUrl: body.githubUrl }),
         ...(body.liveUrl !== undefined && { liveUrl: body.liveUrl }),
-        ...(body.imageUrl !== undefined && { imageUrl: body.imageUrl }),
         ...(body.featured !== undefined && { featured: body.featured }),
       },
     });

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ApplicationStatus } from '@/generated/prisma';
+import { sendFormDecision } from '@/app/services/email/sender';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -8,7 +9,7 @@ interface RouteParams {
 
 /**
  * PATCH /api/members/[id]/reject
- * Sets application status to REJECTED with optional admin notes
+ * Sets application status to REJECTED with optional admin notes and triggers rejection email
  */
 export async function PATCH(request: Request, { params }: RouteParams) {
   try {
@@ -37,10 +38,25 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       },
     });
 
+    // Send decision email to the applicant
+    let emailSent = false;
+    try {
+      await sendFormDecision(
+        updatedApplication.email,
+        updatedApplication.fullName,
+        false, // approved = false
+        rejectionNotes || undefined
+      );
+      emailSent = true;
+    } catch (emailError) {
+      console.error(`Failed to send rejection email to ${updatedApplication.email}:`, emailError);
+    }
+
     return NextResponse.json(
       {
         message: 'Member application rejected successfully',
         application: updatedApplication,
+        emailSent,
       },
       { status: 200 }
     );

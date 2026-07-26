@@ -1,25 +1,30 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { User, Plus, X, ArrowRight } from 'lucide-react';
 
-export default function Step1Page({ params }: { params: { id: string } }) {
+export default function Step1Page() {
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+
   const [skillInput, setSkillInput] = useState('');
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
-    branchAndYear: '',
+    branch: '',
+    semester: '',
     phone: '',
     primaryDomain: 'Frontend',
     skills: [] as string[],
   });
 
   useEffect(() => {
-    const saved = sessionStorage.getItem(`app_draft_${params.id}`);
+    if (!id) return;
+    const saved = sessionStorage.getItem(`app_draft_${id}`);
     if (saved) setFormData((prev) => ({ ...prev, ...JSON.parse(saved) }));
-  }, [params.id]);
+  }, [id]);
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,10 +34,10 @@ export default function Step1Page({ params }: { params: { id: string } }) {
     }
 
     // Save partial draft
-    const existing = JSON.parse(sessionStorage.getItem(`app_draft_${params.id}`) || '{}');
-    sessionStorage.setItem(`app_draft_${params.id}`, JSON.stringify({ ...existing, ...formData }));
+    const existing = JSON.parse(sessionStorage.getItem(`app_draft_${id}`) || '{}');
+    sessionStorage.setItem(`app_draft_${id}`, JSON.stringify({ ...existing, ...formData }));
 
-    router.push(`/application/${params.id}/step-2`);
+    router.push(`/application/${id}/step-2`);
   };
 
   return (
@@ -68,13 +73,24 @@ export default function Step1Page({ params }: { params: { id: string } }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-zinc-400">Branch & Year *</label>
+            <label className="text-zinc-400">Branch  *</label>
             <input
               required
               type="text"
-              value={formData.branchAndYear}
-              onChange={(e) => setFormData({ ...formData, branchAndYear: e.target.value })}
+              value={formData.branch}
+              onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
               className="w-full rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 text-zinc-200 focus:border-indigo-500 focus:outline-none"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-zinc-400">Semester *</label>
+            <input
+              required
+              type="number"
+              value={formData.semester}
+              onChange={(e) => setFormData({ ...formData, semester: e.target.value })}
+              className="w-full rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 text-zinc-200 focus:border-indigo-500 focus:outline-none" min={1}
+              max={8}
             />
           </div>
           <div className="space-y-1">
@@ -86,6 +102,25 @@ export default function Step1Page({ params }: { params: { id: string } }) {
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               className="w-full rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 text-zinc-200 focus:border-indigo-500 focus:outline-none"
             />
+          </div>
+          <div className="space-y-1">
+            <label className="text-zinc-400">Primary Domain *</label>
+            <select
+              required
+              value={formData.primaryDomain}
+              onChange={(e) => setFormData({ ...formData, primaryDomain: e.target.value })}
+              className="w-full rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 text-zinc-200 focus:border-indigo-500 focus:outline-none"
+            >
+              <option value="Frontend">Frontend</option>
+              <option value="Backend">Backend</option>
+              <option value="Fullstack">Fullstack</option>
+              <option value="Mobile">Mobile</option>
+              <option value="DevOps">DevOps</option>
+              <option value="UI/UX Design">UI/UX Design</option>
+              <option value="Data Science">Data Science</option>
+              <option value="AI/ML">AI/ML</option>
+              <option value="Cyber Security">Cyber Security</option>
+            </select>
           </div>
         </div>
 

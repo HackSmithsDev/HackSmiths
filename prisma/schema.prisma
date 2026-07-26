@@ -43,7 +43,7 @@ model OrganizationUser {
   email     String   @unique
   password  String   // Hashed with bcrypt / argon2
   name      String?
-  role      Role     @default(ADMIN)
+  role      Role     @default(MEMBER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -54,16 +54,15 @@ model Application {
   id                  String            @id @default(cuid())
   email               String            // Verified during Step 1 of /application
   fullName            String
-  branchAndYear       String            // e.g. "B.Tech CSE - 1st Year"
+  branch              String            // e.g. "CSE"
+  semester            Int               // e.g. "1"
   phone               String
   primaryDomain       String            // e.g. "Frontend", "AI/ML", "Backend"
   skills              String[]          // Array of skills e.g. ["Next.js", "Python"]
-  projectsDescription String            @db.Text
   githubUrl           String?
-  portfolioUrl        String?
   linkedinUrl         String?
   experience          String?           @db.Text
-  hackathonExperience String?           @db.Text
+  hackathonExperience Boolean           @default(false)
   availability        String            // e.g. "10-15 hrs/week"
   whyJoin             String            @db.Text
   status              ApplicationStatus @default(PENDING)

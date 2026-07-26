@@ -48,10 +48,17 @@ export default async function MemberProfilePage({
             {member.primaryDomain || 'Collective Member'}
           </p>
 
-          {member.branchAndYear && (
+          {member.branch && (
             <p className="text-xs text-muted-foreground mt-1 flex items-center justify-center gap-1">
               <Calendar className="h-3 w-3" />
-              {member.branchAndYear}
+              {member.branch}
+            </p>
+          )}
+
+          {member.semester && (
+            <p className="text-xs text-muted-foreground mt-1 flex items-center justify-center gap-1">
+              <Calendar className="h-3 w-3" />
+              Semester: {member.semester}
             </p>
           )}
 
@@ -77,8 +84,8 @@ export default async function MemberProfilePage({
         <div className="md:col-span-2 space-y-6">
           <div className="rounded-xl border border-border/60 bg-card p-6">
             <h2 className="text-lg font-bold text-foreground mb-3">About Builder</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-              {member.whyJoin || member.projectsDescription || 'Core developer contributing to open-source software and club deployments at HackSmiths.'}
+            <p className="text-sm text-muted-foreground">
+              {member.whyJoin || 'No bio available.'}
             </p>
 
             {member.skills && member.skills.length > 0 && (

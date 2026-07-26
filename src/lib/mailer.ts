@@ -1,12 +1,10 @@
 import nodemailer from "nodemailer";
 
-const isSecurePort = (process.env.MAIL_PORT || "465") === "465";
-
 // 🛰️ Construct SMTP Transport connection pool using exact .env variables
 export const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_SERVER || "smtp.titan.email",
+  host: process.env.MAIL_SERVER || "smtpout.secureserver.net",
   port: parseInt(process.env.MAIL_PORT || "465", 10),
-  secure: isSecurePort, // true for port 465 (Implicit SSL), false for 587 (STARTTLS)
+  secure: (process.env.MAIL_PORT || "465") === "465", // true for port 465 (Implicit SSL), false for 587 (STARTTLS)
   auth: {
     user: process.env.MAIL_USERNAME,
     pass: process.env.MAIL_PASSWORD,
@@ -14,7 +12,7 @@ export const transporter = nodemailer.createTransport({
   // 🔒 Enforce SSL/TLS certificate requirements
   tls: {
     rejectUnauthorized: true, // Reject invalid or self-signed certificates
-    servername: process.env.MAIL_SERVER || "smtp.titan.email", // SNI server name verification
+    servername: process.env.MAIL_SERVER || "smtpout.secureserver.net", // SNI server name verification
   },
   pool: true, // Maintain persistent connection pool
   maxConnections: 5,

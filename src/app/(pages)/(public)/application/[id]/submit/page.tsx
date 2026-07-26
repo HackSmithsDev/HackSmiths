@@ -1,10 +1,12 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { CheckCircle2, Home} from 'lucide-react';
+import { useRouter, useParams } from 'next/navigation';
+import { CheckCircle2, Home } from 'lucide-react';
 
-export default function SubmitSuccessPage({ params }: { params: { id: string } }) {
+export default function SubmitSuccessPage() {
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
 
   return (
     <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-8 text-center space-y-6">
@@ -15,7 +17,8 @@ export default function SubmitSuccessPage({ params }: { params: { id: string } }
       <div className="space-y-2">
         <h2 className="text-xl font-bold text-zinc-100">Application Successfully Submitted!</h2>
         <p className="text-zinc-400 max-w-md mx-auto leading-relaxed">
-          Your profile has been saved to our recruit database. Reference ID: <span className="text-emerald-400 font-mono">{params.id}</span>
+          Your profile has been saved to our recruit database. Reference ID:{' '}
+          <span className="text-emerald-400 font-mono">{id}</span>
         </p>
       </div>
 

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ApplicationStatus } from '@/generated/prisma';
+import { sendFormDecision } from '@/app/services/email/sender';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -8,7 +9,7 @@ interface RouteParams {
 
 /**
  * PATCH /api/members/[id]/approve
- * Sets application status to APPROVED
+ * Sets application status to APPROVED and triggers approval email
  */
 export async function PATCH(request: Request, { params }: RouteParams) {
   try {
@@ -27,6 +28,8 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       );
     }
 
+    const updatedNotes = notes || existing.notes;
+
     const updatedApplication = await prisma.application.update({
       where: { id },
       data: {
@@ -35,10 +38,25 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       },
     });
 
+    // Send decision email to the applicant
+    let emailSent = false;
+    try {
+      await sendFormDecision(
+        updatedApplication.email,
+        updatedApplication.fullName,
+        true, // approved = true
+        updatedNotes || undefined
+      );
+      emailSent = true;
+    } catch (emailError) {
+      console.error(`Failed to send approval email to ${updatedApplication.email}:`, emailError);
+    }
+
     return NextResponse.json(
       {
         message: 'Member application approved successfully',
         application: updatedApplication,
+        emailSent,
       },
       { status: 200 }
     );

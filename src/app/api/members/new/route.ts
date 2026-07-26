@@ -2,10 +2,6 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ApplicationStatus } from '@/generated/prisma';
 
-/**
- * POST /api/members/new
- * Public endpoint to submit a new application or update an existing application.
- */
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -13,13 +9,12 @@ export async function POST(request: Request) {
     const {
       email,
       fullName,
-      branchAndYear,
+      branch,
+      semester,
       phone,
       primaryDomain,
       skills,
-      projectsDescription,
       githubUrl,
-      portfolioUrl,
       linkedinUrl,
       experience,
       hackathonExperience,
@@ -31,10 +26,10 @@ export async function POST(request: Request) {
     if (
       !email ||
       !fullName ||
-      !branchAndYear ||
+      !branch ||
+      !semester ||
       !phone ||
       !primaryDomain ||
-      !projectsDescription ||
       !availability ||
       !whyJoin
     ) {
@@ -44,7 +39,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Check if an application already exists under this email
+    // 2. FORCE INT CONVERSION HERE
+    const parsedSemester = parseInt(String(semester), 10);
+
+    if (isNaN(parsedSemester)) {
+      return NextResponse.json(
+        { error: 'Semester must be a valid integer number.' },
+        { status: 400 }
+      );
+    }
+
+    // 3. Check if an application already exists under this email
     const existingApplication = await prisma.application.findFirst({
       where: { email },
     });
@@ -52,42 +57,38 @@ export async function POST(request: Request) {
     let application;
 
     if (existingApplication) {
-      // Refresh application details and reset status to PENDING for review
       application = await prisma.application.update({
         where: { id: existingApplication.id },
         data: {
           fullName,
-          branchAndYear,
+          branch,
+          semester: parsedSemester, // 👈 USE parsedSemester
           phone,
           primaryDomain,
           skills: Array.isArray(skills) ? skills : [],
-          projectsDescription,
           githubUrl: githubUrl || null,
-          portfolioUrl: portfolioUrl || null,
           linkedinUrl: linkedinUrl || null,
           experience: experience || null,
-          hackathonExperience: hackathonExperience || null,
+          hackathonExperience: Boolean(hackathonExperience),
           availability,
           whyJoin,
           status: ApplicationStatus.PENDING,
         },
       });
     } else {
-      // Create a new application record
       application = await prisma.application.create({
         data: {
           email,
           fullName,
-          branchAndYear,
+          branch,
+          semester: parsedSemester, // 👈 USE parsedSemester
           phone,
           primaryDomain,
           skills: Array.isArray(skills) ? skills : [],
-          projectsDescription,
           githubUrl: githubUrl || null,
-          portfolioUrl: portfolioUrl || null,
           linkedinUrl: linkedinUrl || null,
           experience: experience || null,
-          hackathonExperience: hackathonExperience || null,
+          hackathonExperience: Boolean(hackathonExperience),
           availability,
           whyJoin,
           status: ApplicationStatus.PENDING,

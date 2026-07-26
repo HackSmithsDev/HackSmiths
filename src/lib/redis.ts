@@ -9,10 +9,10 @@ const getRedisUrl = () => {
 };
 
 export const redis = new Redis(getRedisUrl(), {
-  maxRetriesPerRequest: 3,
+  maxRetriesPerRequest: 10,
 
   retryStrategy(times) {
-    if (times > 3) {
+    if (times > 10) {
       return null;
     }
 
@@ -36,8 +36,10 @@ export async function setOtp(
   code: string,
   expiresAt: Date
 ): Promise<void> {
-  const expirySeconds = Math.ceil(
-    (expiresAt.getTime() - Date.now()) / 1000
+
+  const expirySeconds = Math.max(
+    60, 
+    Math.ceil((expiresAt.getTime() - Date.now()) / 1000)
   );
 
   await redis.set(

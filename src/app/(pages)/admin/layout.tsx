@@ -1,7 +1,7 @@
 'use client';
 
 import AdminNavbar from '@/components/unit/AdminNavbar';
-import Footer from '@/components/unit/Footer';
+import AdminFooter from '@/components/unit/AdminFooter';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,7 +10,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <main className="flex-1 overflow-y-auto">
         {children}
       </main>
-      <Footer />
+      <AdminFooter />
     </div>
   );
 }

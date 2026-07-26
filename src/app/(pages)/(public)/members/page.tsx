@@ -43,8 +43,12 @@ export default async function MembersPage() {
                 {member.primaryDomain || 'Collective Builder'}
               </p>
 
-              {member.branchAndYear && (
-                <p className="text-[11px] text-muted-foreground mt-1">{member.branchAndYear}</p>
+              {member.branch && (
+                <p className="text-[11px] text-muted-foreground mt-1">{member.branch}</p>
+              )}
+
+              {member.semester && (
+                <p className="text-[11px] text-muted-foreground mt-1">Semester: {member.semester}</p>
               )}
 
               <div className="flex items-center justify-center gap-3 mt-4 pt-3 border-t border-border/40">

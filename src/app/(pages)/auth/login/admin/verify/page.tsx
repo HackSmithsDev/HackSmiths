@@ -27,7 +27,7 @@ export default function AdminVerifyPage() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/auth/admin/verify-otp', {
+      const res = await fetch('/api/auth/login/admin/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp }),
