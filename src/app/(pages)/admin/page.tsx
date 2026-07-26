@@ -77,12 +77,6 @@ export default function AdminDashboard() {
     fetchApplications();
   }, [fetchApplications]);
 
-  // Handle Logout
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/auth/login');
-  };
-
   // Handle Application Decision (Approve / Reject)
   const handleDecision = async (status: 'APPROVED' | 'REJECTED') => {
     if (!selectedApp) return;
