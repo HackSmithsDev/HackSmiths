@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { FolderGit2, Plus, ExternalLink, Github } from 'lucide-react';
+import { FolderGit2, Plus } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa6';
 
 interface Project {
   id: string;
@@ -59,7 +60,7 @@ export default function ProjectsPage() {
                   rel="noreferrer"
                   className="text-zinc-400 hover:text-zinc-200"
                 >
-                  <Github className="h-4 w-4" />
+                  <FaGithub className="h-4 w-4" />
                 </a>
               )}
             </div>

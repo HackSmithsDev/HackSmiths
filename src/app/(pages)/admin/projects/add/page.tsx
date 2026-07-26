@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, FolderPlus, Github, Globe, Plus, X } from 'lucide-react';
+import { ArrowLeft, FolderPlus, Globe, Plus, X } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa6';
 
 export default function AddProjectPage() {
   const router = useRouter();
@@ -79,7 +80,7 @@ export default function AddProjectPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-zinc-400 flex items-center gap-1">
-                <Github className="h-3.5 w-3.5" /> GitHub Repository
+                <FaGithub className="h-3.5 w-3.5" /> GitHub Repository
               </label>
               <input
                 type="url"

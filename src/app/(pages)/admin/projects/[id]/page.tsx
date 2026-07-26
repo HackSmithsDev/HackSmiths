@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, FolderGit2, Github, Globe, Save, Trash2, X, Plus, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, FolderGit2, Globe, Save, Trash2, X, Plus, CheckCircle2 } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa6';
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -92,7 +93,7 @@ export default function ProjectDetailPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-zinc-400 flex items-center gap-1">
-                <Github className="h-3.5 w-3.5" /> GitHub Repository
+                <FaGithub className="h-3.5 w-3.5" /> GitHub Repository
               </label>
               <input
                 type="url"
