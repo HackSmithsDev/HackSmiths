@@ -44,7 +44,7 @@ export default function AdminNavbar() {
         {/* Left: Brand + Admin Badge */}
         <div className="flex items-center gap-3">
           {/* Brand / Logo */}
-          <Link href="/" className="inline-flex items-center gap-2.5 group">
+          <Link href="/admin" className="inline-flex items-center gap-2.5 group">
             
             {/* Circular logo icon with hover zoom effect */}
             <div className="flex h-8 w-8 items-center justify-center rounded-full overflow-hidden border border-zinc-800 bg-zinc-900 transition-transform duration-300 group-hover:scale-105 shrink-0">
