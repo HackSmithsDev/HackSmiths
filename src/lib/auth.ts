@@ -8,7 +8,7 @@ const JWT_SECRET = new TextEncoder().encode(
 export interface TokenPayload {
   userId: string;
   email: string;
-  role: 'USER' | 'ADMIN';
+  role: "ADMIN" | "MEMBER";
 }
 
 /**

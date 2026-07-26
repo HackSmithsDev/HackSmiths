@@ -12,7 +12,7 @@ interface RouteParams {
  * GET /api/members/[id]
  * Fetch single member / application by ID
  */
-export async function GET(request: Request, { params }: RouteParams) {
+export async function GET({ params }: RouteParams) {
   try {
     const { id } = params;
 

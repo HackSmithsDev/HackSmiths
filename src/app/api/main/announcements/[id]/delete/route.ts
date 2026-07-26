@@ -5,7 +5,7 @@ interface RouteParams {
   params: { id: string };
 }
 
-export async function DELETE(request: Request, { params }: RouteParams) {
+export async function DELETE({ params }: RouteParams) {
   try {
     const { id } = params;
 

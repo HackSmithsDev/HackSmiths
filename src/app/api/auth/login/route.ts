@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma'; // or your database client
 import { redis } from '@/lib/redis';
 import { comparePasswords, createJwtToken } from '@/lib/auth';
-import { sendOtpEmail } from '@/lib/email'; // Your email provider service (Resend/Nodemailer)
+import { sendAdminOtp } from '@/app/services/email/sender'; // Your email provider service (Resend/Nodemailer)
 
 export async function POST(req: Request) {
   try {
@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     }
 
     // 1. Find user in Database
-    const user = await prisma.user.findUnique({
+    const user = await prisma.organizationUser.findUnique({
       where: { email: email.toLowerCase() },
     });
 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     }
 
     // 2. Validate Password
-    const isPasswordValid = await comparePasswords(password, user.passwordHash);
+    const isPasswordValid = await comparePasswords(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
         { error: 'Invalid email or password.' },
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       await redis.set(redisKey, otpCode, 'EX', 300);
 
       // Send OTP to Admin's email
-      await sendOtpEmail(user.email, otpCode);
+      await sendAdminOtp(user.email, otpCode);
 
       return NextResponse.json({
         success: true,
