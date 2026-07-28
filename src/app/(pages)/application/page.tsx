@@ -15,6 +15,8 @@ import {
   CheckCircle2,
   Terminal,
   Trophy,
+  Loader2,
+  Sparkles,
 } from 'lucide-react';
 
 type ViewMode = 'EMAIL' | 'OTP';
@@ -74,7 +76,7 @@ export default function ApplicationOverviewPage() {
         applicationData: data.applicationData,
       });
 
-      setSuccessMsg(`Verification code sent to ${email}`);
+      setSuccessMsg(`Verification code dispatched to ${email}`);
       setMode('OTP');
       setCooldown(60);
     } catch (err: unknown) {
@@ -144,43 +146,58 @@ export default function ApplicationOverviewPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
-      {/* Background Ambient Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none" />
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-indigo-500/30 selection:text-indigo-200 relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 antialiased">
+      {/* Background Ambient Glows */}
+      <div 
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-indigo-600/10 blur-[130px] rounded-full pointer-events-none" 
+        aria-hidden="true" 
+      />
+      <div 
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[500px] h-[200px] bg-violet-600/5 blur-[100px] rounded-full pointer-events-none" 
+        aria-hidden="true" 
+      />
 
       <div className="relative z-10 max-w-4xl mx-auto space-y-10">
         {/* Top Navigation Control */}
         <div className="flex items-center justify-between font-mono text-xs">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-zinc-400 hover:text-indigo-400 transition-colors"
+            className="inline-flex items-center gap-2 text-zinc-400 hover:text-indigo-400 transition-colors py-1 px-2.5 rounded-md hover:bg-zinc-900/60 border border-transparent hover:border-zinc-800"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span>BACK_TO_HOME</span>
+            <span>RETURN_TO_HOME</span>
           </Link>
+
+          <span className="text-[11px] text-zinc-500 hidden sm:inline-block font-mono">
+            RECRUITMENT_PORTAL // 2026
+          </span>
         </div>
 
         {/* Header Banner */}
         <div className="text-center space-y-4 font-mono">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3.5 py-1 text-xs text-indigo-300">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3.5 py-1 text-xs text-indigo-300 shadow-sm">
             <Terminal className="h-3.5 w-3.5 text-indigo-400" />
-            <span>hacksmiths --join // core guild recruitment</span>
+            <span>hacksmiths --join // guild entry portal</span>
           </div>
+
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-zinc-100 leading-tight">
             Join The Core<span className="text-indigo-400">.</span>
           </h1>
 
-          <p className="font-sans text-zinc-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Verify your email address to start a new application or resume an existing submission.
+          <p className="font-sans text-zinc-400 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+            Verify your email address to initiate a new recruit application or resume an active submission draft.
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="mx-auto max-w-md rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 sm:p-8 backdrop-blur-sm shadow-xl font-mono">
+        <div className="mx-auto max-w-md rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 sm:p-8 backdrop-blur-sm shadow-2xl font-mono relative overflow-hidden">
+          {/* Subtle Accent Edge Line */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+
           {mode === 'EMAIL' ? (
             <form onSubmit={handleSendOtp} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-zinc-300 mb-2">
+                <label className="block text-[11px] font-bold text-zinc-300 mb-2 uppercase tracking-wider">
                   EMAIL_ADDRESS
                 </label>
                 <div className="relative">
@@ -189,7 +206,7 @@ export default function ApplicationOverviewPage() {
                     required
                     type="email"
                     placeholder="user@domain.com"
-                    className="w-full rounded-lg border border-zinc-800 bg-zinc-950 pl-9 pr-3 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono"
+                    className="w-full rounded-lg border border-zinc-800 bg-zinc-950/80 pl-9 pr-3 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -206,15 +223,24 @@ export default function ApplicationOverviewPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/25 disabled:opacity-50 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/25 disabled:opacity-50 cursor-pointer"
               >
-                {loading ? 'SENDING_OTP...' : 'SEND VERIFICATION CODE'}
-                <ArrowRight className="h-4 w-4" />
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin text-indigo-200" />
+                    <span>DISPATCHING_CODE...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>SEND VERIFICATION CODE</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
               </button>
             </form>
           ) : (
             <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
                 <button
                   type="button"
                   onClick={() => {
@@ -222,24 +248,25 @@ export default function ApplicationOverviewPage() {
                     setError('');
                     setOtp('');
                   }}
-                  className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-100 transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
-                  Change Email
+                  <span>Change Email</span>
                 </button>
-                <span className="text-xs text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20 font-mono">
+                <span className="text-[11px] text-indigo-300 bg-indigo-500/10 px-2.5 py-1 rounded border border-indigo-500/20 font-mono max-w-[180px] truncate">
                   {email}
                 </span>
               </div>
 
               {appMetadata?.exists && (
-                <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3 text-xs text-amber-400 font-sans">
-                  Existing application found for this email address. Enter OTP to resume.
+                <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3 text-xs text-amber-300 font-sans flex items-start gap-2">
+                  <Sparkles className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
+                  <span>Existing submission draft identified. Verify code to restore your progress.</span>
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-bold text-zinc-300 mb-2">
+                <label className="block text-[11px] font-bold text-zinc-300 mb-2 uppercase tracking-wider">
                   VERIFICATION_CODE (6-DIGITS)
                 </label>
                 <div className="relative">
@@ -249,7 +276,7 @@ export default function ApplicationOverviewPage() {
                     type="text"
                     maxLength={6}
                     placeholder="123456"
-                    className="w-full rounded-lg border border-zinc-800 bg-zinc-950 pl-9 pr-3 py-2.5 text-xs text-center font-mono tracking-widest text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                    className="w-full rounded-lg border border-zinc-800 bg-zinc-950 pl-9 pr-3 py-2.5 text-xs text-center font-mono tracking-[0.3em] text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all placeholder:tracking-normal"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                   />
@@ -273,10 +300,19 @@ export default function ApplicationOverviewPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/25 disabled:opacity-50 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/25 disabled:opacity-50 cursor-pointer"
               >
-                {loading ? 'VERIFYING...' : 'VERIFY & CONTINUE'}
-                <ArrowRight className="h-4 w-4" />
+                {loading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin text-indigo-200" />
+                    <span>AUTHENTICATING...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>VERIFY & CONTINUE</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
               </button>
 
               <div className="text-center pt-2">
@@ -287,7 +323,9 @@ export default function ApplicationOverviewPage() {
                   className="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-indigo-400 disabled:opacity-50 transition-colors cursor-pointer"
                 >
                   <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
-                  {cooldown > 0 ? `Resend code in ${cooldown}s` : 'Resend code'}
+                  <span>
+                    {cooldown > 0 ? `Resend code in ${cooldown}s` : 'Resend code'}
+                  </span>
                 </button>
               </div>
             </form>
@@ -296,33 +334,33 @@ export default function ApplicationOverviewPage() {
 
         {/* Pillars Preview Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs pt-4">
-          <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-3 backdrop-blur-sm">
+          <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-3 backdrop-blur-sm hover:border-zinc-700/80 transition-colors">
             <div className="h-10 w-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
               <Code2 className="h-5 w-5" />
             </div>
-            <h3 className="text-sm font-bold text-zinc-100">Production Code</h3>
-            <p className="text-zinc-400 font-sans leading-relaxed">
-              Build full-stack platforms, scalable backends, and user-facing applications.
+            <h3 className="text-sm font-bold text-zinc-100">Production Engineering</h3>
+            <p className="text-zinc-400 font-sans leading-relaxed text-xs">
+              Architect and deliver full-stack applications, scalable backends, and production tooling.
             </p>
           </div>
 
-          <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-3 backdrop-blur-sm">
+          <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-3 backdrop-blur-sm hover:border-zinc-700/80 transition-colors">
             <div className="h-10 w-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
               <Trophy className="h-5 w-5" />
             </div>
-            <h3 className="text-sm font-bold text-zinc-100">Hackathons</h3>
-            <p className="text-zinc-400 font-sans leading-relaxed">
-              Assemble teams, prototype under tight deadlines, and compete nationwide.
+            <h3 className="text-sm font-bold text-zinc-100">Hackathon Squads</h3>
+            <p className="text-zinc-400 font-sans leading-relaxed text-xs">
+              Assemble specialized teams, prototype under tight timelines, and represent at top hackathons.
             </p>
           </div>
 
-          <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-3 backdrop-blur-sm">
+          <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 space-y-3 backdrop-blur-sm hover:border-zinc-700/80 transition-colors">
             <div className="h-10 w-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
               <ShieldCheck className="h-5 w-5" />
             </div>
-            <h3 className="text-sm font-bold text-zinc-100">Peer Network</h3>
-            <p className="text-zinc-400 font-sans leading-relaxed">
-              Code reviews, architectural discussions, and direct mentorship from core members.
+            <h3 className="text-sm font-bold text-zinc-100">Guild Mentorship</h3>
+            <p className="text-zinc-400 font-sans leading-relaxed text-xs">
+              Receive direct code reviews, system design critiques, and technical guidance from senior core members.
             </p>
           </div>
         </div>

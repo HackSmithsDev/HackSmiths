@@ -437,10 +437,10 @@ contact@hacksmiths.dev
 
 # 🌍 Connect With Us
 
-- 🌐 Website
-- 📷 Instagram
-- 𝕏 X
-- 🐙 GitHub
+- 🌐 [Website](https://hacksmiths.dev)
+- 📷 [Instagram](https://instagram.com/hacksmithsdev)
+- 𝕏 [X](https://x.com/hacksmithsdev)
+- 🐙 [GitHub](https://github.com/HackSmithsDev)
 
 ---
 

@@ -64,7 +64,7 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
               onClick={handleIntroComplete}
               className="absolute bottom-10 text-xs text-neutral-500 hover:text-white transition-colors tracking-widest uppercase cursor-pointer"
             >
-              [ Press anywhere or skip to continue ]
+              [ Press to continue ]
             </motion.button>
           </motion.div>
         )}

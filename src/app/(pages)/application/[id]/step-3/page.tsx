@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { Globe, ArrowLeft, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
+import { Globe, ArrowLeft, ArrowRight, Loader2, AlertCircle, Terminal } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa6';
 
 export default function Step3Page() {
@@ -57,15 +57,22 @@ export default function Step3Page() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 font-mono text-xs">
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 sm:p-8 space-y-6 backdrop-blur-sm shadow-xl">
+    <form onSubmit={handleSubmit} className="space-y-6 font-mono text-xs antialiased">
+      {/* Step Container Card */}
+      <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 sm:p-8 space-y-6 backdrop-blur-sm shadow-xl relative overflow-hidden">
+        {/* Subtle background glow accent */}
+        <div 
+          className="absolute -top-24 -right-24 h-48 w-48 bg-indigo-600/10 blur-[80px] rounded-full pointer-events-none" 
+          aria-hidden="true" 
+        />
+
         {/* Section Header */}
         <div className="border-b border-zinc-800/80 pb-4 flex items-center justify-between">
           <h2 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
             <Globe className="h-4 w-4 text-indigo-400" />
             03 // MOTIVATION & PORTFOLIOS
           </h2>
-          <span className="text-[10px] text-zinc-500 uppercase tracking-widest hidden sm:inline-block">
+          <span className="text-[10px] text-zinc-500 uppercase tracking-widest hidden sm:inline-block font-mono">
             Step 3 of 3
           </span>
         </div>
@@ -99,7 +106,7 @@ export default function Step3Page() {
             </label>
             <input
               type="url"
-              value={formData.githubUrl}
+              value={formData.githubUrl ?? ''}
               onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
               placeholder="https://github.com/username"
               className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono"
@@ -114,7 +121,7 @@ export default function Step3Page() {
             </label>
             <input
               type="url"
-              value={formData.linkedinUrl}
+              value={formData.linkedinUrl ?? ''}
               onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
               placeholder="https://linkedin.com/in/username"
               className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono"
@@ -123,8 +130,9 @@ export default function Step3Page() {
         </div>
 
         {/* Submission Notice */}
-        <div className="rounded-lg bg-zinc-950 border border-zinc-800/80 p-4 text-[11px] font-sans text-zinc-400 leading-relaxed">
-          <p className="font-mono text-xs text-indigo-400 font-semibold mb-1">
+        <div className="rounded-lg bg-zinc-950 border border-zinc-800/80 p-4 text-[11px] font-sans text-zinc-400 leading-relaxed relative overflow-hidden">
+          <p className="font-mono text-xs text-indigo-400 font-semibold mb-1 flex items-center gap-1.5">
+            <Terminal className="h-3.5 w-3.5" />
             FINAL_VERIFICATION
           </p>
           By clicking submit, your application payload will be dispatched directly to the HackSmiths core guild team for review.
@@ -150,7 +158,7 @@ export default function Step3Page() {
             router.push(`/application/${id}/step-2`);
           }}
           disabled={loading}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-4 py-2.5 text-xs font-semibold text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 disabled:opacity-50 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-4 py-2.5 text-xs font-semibold text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 disabled:opacity-50 transition-colors cursor-pointer font-mono"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>PREVIOUS STEP</span>
@@ -159,7 +167,7 @@ export default function Step3Page() {
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/25 disabled:opacity-50 cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/25 disabled:opacity-50 cursor-pointer font-mono"
         >
           {loading ? (
             <>

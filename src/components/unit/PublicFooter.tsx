@@ -50,7 +50,7 @@ export default function Footer() {
             {/* Social Links Bar */}
             <div className="flex items-center gap-2 pt-1">
               <a 
-                href="https://instagram.com/hacksmiths.dev" 
+                href="https://www.instagram.com/hacksmithsdev" 
                 target="_blank" 
                 rel="noreferrer" 
                 aria-label="Instagram"
@@ -68,7 +68,7 @@ export default function Footer() {
                 <XIcon className="h-3 w-3" />
               </a>
               <a 
-                href="https://github.com/hacksmiths" 
+                href="https://github.com/HackSmithsDev" 
                 target="_blank" 
                 rel="noreferrer" 
                 aria-label="GitHub"

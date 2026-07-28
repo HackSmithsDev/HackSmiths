@@ -60,15 +60,22 @@ export default function Step2Page() {
   };
 
   return (
-    <form onSubmit={handleNext} className="space-y-6 font-mono text-xs">
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 sm:p-8 space-y-6 backdrop-blur-sm shadow-xl">
+    <form onSubmit={handleNext} className="space-y-6 font-mono text-xs antialiased">
+      {/* Step Container Card */}
+      <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-6 sm:p-8 space-y-6 backdrop-blur-sm shadow-xl relative overflow-hidden">
+        {/* Subtle background glow accent */}
+        <div 
+          className="absolute -top-24 -right-24 h-48 w-48 bg-indigo-600/10 blur-[80px] rounded-full pointer-events-none" 
+          aria-hidden="true" 
+        />
+
         {/* Section Header */}
         <div className="border-b border-zinc-800/80 pb-4 flex items-center justify-between">
           <h2 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
             <FileText className="h-4 w-4 text-indigo-400" />
             02 // TECHNICAL STACK & EXPERIENCE
           </h2>
-          <span className="text-[10px] text-zinc-500 uppercase tracking-widest hidden sm:inline-block">
+          <span className="text-[10px] text-zinc-500 uppercase tracking-widest hidden sm:inline-block font-mono">
             Step 2 of 3
           </span>
         </div>
@@ -83,7 +90,7 @@ export default function Step2Page() {
               required
               value={formData.primaryDomain}
               onChange={(e) => setFormData({ ...formData, primaryDomain: e.target.value })}
-              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono cursor-pointer"
             >
               <option value="Frontend">Frontend Development</option>
               <option value="Backend">Backend Engineering</option>
@@ -105,7 +112,7 @@ export default function Step2Page() {
               required
               value={formData.availability}
               onChange={(e) => setFormData({ ...formData, availability: e.target.value })}
-              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono cursor-pointer"
             >
               <option value="10-15 hrs/week">10 - 15 hours / week</option>
               <option value="15-20 hrs/week">15 - 20 hours / week</option>
@@ -135,14 +142,14 @@ export default function Step2Page() {
                 }
               }}
               placeholder="e.g. Next.js, Docker, Python, PostgreSQL"
-              className="flex-1 rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              className="flex-1 rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono"
             />
             <button
               type="button"
               onClick={handleAddSkill}
-              className="px-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 transition-colors flex items-center gap-1.5 font-semibold shrink-0 cursor-pointer"
+              className="px-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 transition-colors flex items-center gap-1.5 font-semibold shrink-0 cursor-pointer font-mono"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4 text-indigo-400" />
               <span>Add</span>
             </button>
           </div>
@@ -153,7 +160,7 @@ export default function Step2Page() {
               {formData.skills.map((skill) => (
                 <span
                   key={skill}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-indigo-500/10 border border-indigo-500/30 px-3 py-1 text-xs text-indigo-300"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-indigo-500/10 border border-indigo-500/30 px-3 py-1 text-xs text-indigo-300 font-mono"
                 >
                   <Terminal className="h-3 w-3 text-indigo-400" />
                   <span>{skill}</span>
@@ -187,7 +194,7 @@ export default function Step2Page() {
             required
             value={formData.hackathonExperience}
             onChange={(e) => setFormData({ ...formData, hackathonExperience: e.target.value })}
-            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-2.5 text-xs text-zinc-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all font-mono cursor-pointer"
           >
             <option value="true">Yes, I have competed in hackathons</option>
             <option value="false">No prior hackathon participation</option>
@@ -214,7 +221,7 @@ export default function Step2Page() {
         <button
           type="button"
           onClick={() => router.push(`/application/${id}/step-1`)}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-4 py-2.5 text-xs font-semibold text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/80 px-4 py-2.5 text-xs font-semibold text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100 transition-colors cursor-pointer font-mono"
         >
           <ArrowLeft className="h-4 w-4" />
           <span>PREVIOUS STEP</span>
@@ -222,7 +229,7 @@ export default function Step2Page() {
 
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/25 cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-lg shadow-indigo-600/25 cursor-pointer font-mono"
         >
           <span>PROCEED TO STEP 3</span>
           <ArrowRight className="h-4 w-4" />

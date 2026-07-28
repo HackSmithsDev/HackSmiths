@@ -7,10 +7,12 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "db:seed:settings": "tsx prisma/seed/admin_settings.ts",
+    "db:seed:admin": "tsx prisma/seed/admin_fetch.ts"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed/index.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.2",

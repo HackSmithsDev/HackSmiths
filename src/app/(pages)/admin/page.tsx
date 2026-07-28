@@ -13,6 +13,7 @@ import {
   X,
   UserCheck,
   UserX,
+  Trash2,
   Loader2,
 } from 'lucide-react';
 
@@ -65,7 +66,7 @@ export default function AdminDashboard() {
         return;
       }
       const data = await res.json();
-      setApplications(data.members || []);
+      setApplications(data.members || data.applications || []);
     } catch (err) {
       console.error('Failed to load applications:', err);
     } finally {
@@ -82,13 +83,17 @@ export default function AdminDashboard() {
     if (!selectedApp) return;
 
     setProcessingId(selectedApp.id);
+    const endpoint =
+      status === 'APPROVED'
+        ? `/api/members/${selectedApp.id}/approve`
+        : `/api/members/${selectedApp.id}/reject`;
+
     try {
-      const res = await fetch(`/api/admin/applications/${selectedApp.id}`, {
-        method: 'PATCH',
+      const res = await fetch(endpoint, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          status,
-          notes: actionNotes,
+          notes: actionNotes ?? '',
         }),
       });
 
@@ -108,10 +113,40 @@ export default function AdminDashboard() {
         setSelectedApp(null);
         setActionNotes('');
       } else {
-        alert('Failed to update status. Please check your backend endpoint.');
+        const errorData = await res.json().catch(() => ({}));
+        alert(errorData.message || `Failed to set status to ${status}.`);
       }
     } catch (err) {
       console.error('Error submitting decision:', err);
+      alert('An unexpected error occurred.');
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  // Handle Application Removal
+  const handleRemove = async () => {
+    if (!selectedApp) return;
+    if (!confirm('Are you sure you want to remove this applicant?')) return;
+
+    setProcessingId(selectedApp.id);
+    try {
+      const res = await fetch(`/api/members/${selectedApp.id}/remove`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        setApplications((prev) =>
+          prev.filter((app) => app.id !== selectedApp.id)
+        );
+        setSelectedApp(null);
+        setActionNotes('');
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        alert(errorData.message || 'Failed to remove applicant.');
+      }
+    } catch (err) {
+      console.error('Error removing application:', err);
       alert('An unexpected error occurred.');
     } finally {
       setProcessingId(null);
@@ -143,6 +178,12 @@ export default function AdminDashboard() {
             <XCircle className="w-3 h-3" /> REJECTED
           </span>
         );
+      case 'REMOVED':
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-zinc-700/10 text-zinc-400 border border-zinc-700/20">
+            <XCircle className="w-3 h-3" /> REMOVED
+          </span>
+        );
       default:
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
@@ -154,7 +195,6 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 antialiased font-sans">
-
       {/* Main Control Center Area */}
       <main className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
         {/* Header Stats & Title */}
@@ -185,7 +225,7 @@ export default function AdminDashboard() {
             <input
               type="text"
               placeholder="Search name, email, domain, or ID..."
-              value={searchQuery}
+              value={searchQuery ?? ''}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full rounded-lg border border-zinc-800 bg-zinc-900/80 pl-9 pr-4 py-2 text-xs text-zinc-200 placeholder-zinc-500 focus:border-indigo-500/50 focus:outline-none focus:ring-1 focus:ring-indigo-500/50"
             />
@@ -265,7 +305,7 @@ export default function AdminDashboard() {
                         <button
                           onClick={() => {
                             setSelectedApp(app);
-                            setActionNotes(app.notes || '');
+                            setActionNotes(app.notes ?? '');
                           }}
                           className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-300 hover:border-indigo-500/40 hover:text-indigo-400 transition cursor-pointer"
                         >
@@ -369,7 +409,7 @@ export default function AdminDashboard() {
                 </label>
                 <textarea
                   rows={3}
-                  value={actionNotes}
+                  value={actionNotes ?? ''}
                   onChange={(e) => setActionNotes(e.target.value)}
                   placeholder="Add evaluation notes..."
                   className="w-full rounded-lg border border-zinc-800 bg-zinc-900/90 p-2.5 text-xs text-zinc-200 placeholder-zinc-600 focus:border-indigo-500 focus:outline-none"
@@ -378,24 +418,35 @@ export default function AdminDashboard() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-3 border-t border-zinc-800/80 pt-4 font-mono">
+            <div className="flex items-center justify-between border-t border-zinc-800/80 pt-4 font-mono">
               <button
-                onClick={() => handleDecision('REJECTED')}
+                onClick={handleRemove}
                 disabled={processingId === selectedApp.id}
-                className="flex items-center gap-1.5 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs font-semibold text-rose-400 hover:bg-rose-500/20 transition disabled:opacity-50 cursor-pointer"
+                className="flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs font-semibold text-zinc-400 hover:text-rose-400 hover:border-rose-500/30 transition disabled:opacity-50 cursor-pointer"
               >
-                <UserX className="h-4 w-4" />
-                Reject
+                <Trash2 className="h-3.5 w-3.5" />
+                Remove
               </button>
 
-              <button
-                onClick={() => handleDecision('APPROVED')}
-                disabled={processingId === selectedApp.id}
-                className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500 transition disabled:opacity-50 cursor-pointer"
-              >
-                <UserCheck className="h-4 w-4" />
-                Approve Candidate
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleDecision('REJECTED')}
+                  disabled={processingId === selectedApp.id}
+                  className="flex items-center gap-1.5 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3.5 py-2 text-xs font-semibold text-rose-400 hover:bg-rose-500/20 transition disabled:opacity-50 cursor-pointer"
+                >
+                  <UserX className="h-4 w-4" />
+                  Reject
+                </button>
+
+                <button
+                  onClick={() => handleDecision('APPROVED')}
+                  disabled={processingId === selectedApp.id}
+                  className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-indigo-500 transition disabled:opacity-50 cursor-pointer"
+                >
+                  <UserCheck className="h-4 w-4" />
+                  Approve
+                </button>
+              </div>
             </div>
           </div>
         </div>
