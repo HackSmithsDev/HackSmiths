@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useParams } from 'next/navigation';
-import { Sparkles, User, FileText, Globe, CheckCircle2, Check } from 'lucide-react';
+import { Sparkles, User, Code2, Globe, CheckCircle2, Check } from 'lucide-react';
 
 export default function ApplicationLayout({
   children,
@@ -13,12 +13,20 @@ export default function ApplicationLayout({
 
   const getStepStatus = (stepPath: string) => {
     if (pathname.includes(stepPath)) return 'active';
-    
+
     // Logic for completed stages
-    if (stepPath === 'step-1' && (pathname.includes('step-2') || pathname.includes('step-3') || pathname.includes('submit'))) {
+    if (
+      stepPath === 'step-1' &&
+      (pathname.includes('step-2') ||
+        pathname.includes('step-3') ||
+        pathname.includes('submit'))
+    ) {
       return 'completed';
     }
-    if (stepPath === 'step-2' && (pathname.includes('step-3') || pathname.includes('submit'))) {
+    if (
+      stepPath === 'step-2' &&
+      (pathname.includes('step-3') || pathname.includes('submit'))
+    ) {
       return 'completed';
     }
     if (stepPath === 'step-3' && pathname.includes('submit')) {
@@ -41,16 +49,36 @@ export default function ApplicationLayout({
         </h1>
 
         <p className="text-[11px] text-zinc-500">
-          Ref ID: {params.id}
+          Ref ID: {params?.id || 'GLOBAL'}
         </p>
       </div>
 
       {/* 4-Step Progress Bar */}
       <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <StepIndicator status={getStepStatus('step-1')} stepNum="STEP 1" label="Basic Info" icon={User} />
-        <StepIndicator status={getStepStatus('step-2')} stepNum="STEP 2" label="Experience" icon={FileText} />
-        <StepIndicator status={getStepStatus('step-3')} stepNum="STEP 3" label="Portfolios" icon={Globe} />
-        <StepIndicator status={getStepStatus('submit')} stepNum="STEP 4" label="Confirmation" icon={CheckCircle2} />
+        <StepIndicator
+          status={getStepStatus('step-1')}
+          stepNum="STEP 1"
+          label="Basic Info"
+          icon={User}
+        />
+        <StepIndicator
+          status={getStepStatus('step-2')}
+          stepNum="STEP 2"
+          label="Tech Stack"
+          icon={Code2}
+        />
+        <StepIndicator
+          status={getStepStatus('step-3')}
+          stepNum="STEP 3"
+          label="Motivation & Links"
+          icon={Globe}
+        />
+        <StepIndicator
+          status={getStepStatus('submit')}
+          stepNum="STEP 4"
+          label="Confirmation"
+          icon={CheckCircle2}
+        />
       </div>
 
       {/* Dynamic Sub-route Content */}

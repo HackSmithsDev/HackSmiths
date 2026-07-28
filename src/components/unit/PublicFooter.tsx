@@ -2,13 +2,8 @@
 
 import Link from 'next/link';
 import NextImage from 'next/image';
-import { 
-  Mail, 
-  Phone, 
-  Heart
-} from 'lucide-react';
+import { Mail, Phone, Heart, Terminal } from 'lucide-react';
 import { FaGithub, FaInstagram } from 'react-icons/fa6';
-import { Button } from '@/components/ui/button';
 
 // Custom X (Twitter) Icon Component for brand accuracy
 function XIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -23,20 +18,18 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen border-t border-border/60 bg-card/60 backdrop-blur-md text-foreground transition-colors">
-      <div className="w-full px-6 py-12 sm:px-10 lg:px-16 lg:py-16">
+    <footer className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen border-t border-zinc-800/80 bg-zinc-950 font-mono text-zinc-400 text-xs antialiased">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
         
-        {/* Exact 4-column layout */}
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           
           {/* Cols 1 & 2: Brand Identity */}
           <div className="space-y-4 lg:col-span-2">
             <Link href="/" className="inline-flex items-center gap-3 group">
-              
-              {/* Circular logo icon with hover zoom effect */}
-              <div className="flex h-9 w-9 items-center justify-center rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-110 shrink-0">
+              <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg bg-zinc-900 border border-zinc-800 group-hover:border-indigo-500/50 transition-all duration-300 group-hover:scale-105 shrink-0">
                 <NextImage 
-                  src="/favicon.ico"
+                  src="/assets/images/hacksmiths-logo.png"
                   alt="HackSmiths Logo"
                   width={36}
                   height={36}
@@ -44,86 +37,103 @@ export default function Footer() {
                 />
               </div>
 
-              {/* Clean Text Brand Name */}
-              <span className="font-extrabold tracking-tight text-xl">
-                <span className="text-foreground">HACK</span>
-                <span className="text-muted-foreground transition-colors group-hover:text-foreground">SMITHS</span>
+              <span className="font-extrabold tracking-tight text-lg sm:text-xl">
+                <span className="text-zinc-100">HACK</span>
+                <span className="text-indigo-400">SMITHS</span>
               </span>
-
             </Link>
 
-            <p className="max-w-md text-sm text-muted-foreground leading-relaxed">
+            <p className="max-w-md text-xs text-zinc-400 leading-relaxed font-sans">
               Build. Compete. Create. We are a collective of developers, designers, and innovators building high-impact tech, competing in hackathons, and delivering software solutions.
             </p>
 
             {/* Social Links Bar */}
-            <div className="flex items-center gap-2 pt-2">
-              <Button variant="outline" size="icon" className="h-8 w-8 rounded-md hover:text-primary transition-colors" asChild>
-                <a href="https://instagram.com/hacksmiths.dev" target="_blank" rel="noreferrer" aria-label="Instagram">
-                  <FaInstagram className="h-4 w-4" />
-                </a>
-              </Button>
-              <Button variant="outline" size="icon" className="h-8 w-8 rounded-md hover:text-primary transition-colors" asChild>
-                <a href="https://x.com/hacksmithsdev" target="_blank" rel="noreferrer" aria-label="X (Twitter)">
-                  <XIcon className="h-3.5 w-3.5" />
-                </a>
-              </Button>
-              <Button variant="outline" size="icon" className="h-8 w-8 rounded-md hover:text-primary transition-colors" asChild>
-                <a href="https://github.com/hacksmiths" target="_blank" rel="noreferrer" aria-label="GitHub">
-                  <FaGithub className="h-4 w-4" />
-                </a>
-              </Button>
+            <div className="flex items-center gap-2 pt-1">
+              <a 
+                href="https://instagram.com/hacksmiths.dev" 
+                target="_blank" 
+                rel="noreferrer" 
+                aria-label="Instagram"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-indigo-500/40 hover:text-indigo-400 transition cursor-pointer"
+              >
+                <FaInstagram className="h-3.5 w-3.5" />
+              </a>
+              <a 
+                href="https://x.com/hacksmithsdev" 
+                target="_blank" 
+                rel="noreferrer" 
+                aria-label="X (Twitter)"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-indigo-500/40 hover:text-indigo-400 transition cursor-pointer"
+              >
+                <XIcon className="h-3 w-3" />
+              </a>
+              <a 
+                href="https://github.com/hacksmiths" 
+                target="_blank" 
+                rel="noreferrer" 
+                aria-label="GitHub"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-indigo-500/40 hover:text-indigo-400 transition cursor-pointer"
+              >
+                <FaGithub className="h-3.5 w-3.5" />
+              </a>
             </div>
           </div>
 
           {/* Col 3: Navigation */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold tracking-wider text-foreground uppercase">Navigation</h3>
-            <ul className="space-y-2.5 text-sm text-muted-foreground">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-200">
+              Navigation
+            </h3>
+            <ul className="space-y-2 text-xs text-zinc-400">
               <li>
-                <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+                <Link href="/" className="hover:text-indigo-400 transition-colors">
+                  Home
+                </Link>
               </li>
               <li>
-                <Link href="/projects" className="hover:text-primary transition-colors">Projects & Showcase</Link>
+                <Link href="/projects" className="hover:text-indigo-400 transition-colors">
+                  Projects & Showcase
+                </Link>
               </li>
               <li>
-                <Link href="/members" className="hover:text-primary transition-colors">Team</Link>
+                <Link href="/members" className="hover:text-indigo-400 transition-colors">
+                  Team & Guild Roster
+                </Link>
               </li>
               <li>
-                <Link href="/announcements" className="hover:text-primary transition-colors">Announcements</Link>
+                <Link href="/announcements" className="hover:text-indigo-400 transition-colors">
+                  Announcements
+                </Link>
               </li>
             </ul>
           </div>
 
           {/* Col 4: Get in Touch */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold tracking-wider text-foreground uppercase">Get in Touch</h3>
-            <div className="space-y-2.5 text-sm text-muted-foreground">
-              
-              {/* Email */}
+            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-200">
+              Get in Touch
+            </h3>
+            <div className="space-y-2 text-xs text-zinc-400">
               <a 
                 href="mailto:info@hacksmiths.dev" 
-                className="flex items-center gap-2 hover:text-primary transition-colors group"
+                className="flex items-center gap-2 hover:text-indigo-400 transition-colors group"
               >
-                <Mail className="h-4 w-4 text-primary shrink-0" />
+                <Mail className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
                 <span className="truncate group-hover:underline">info@hacksmiths.dev</span>
               </a>
 
-              {/* Phone 1 */}
               <a 
                 href="tel:+917000435413" 
-                className="flex items-center gap-2 hover:text-primary transition-colors group"
+                className="flex items-center gap-2 hover:text-indigo-400 transition-colors"
               >
-                <Phone className="h-4 w-4 text-primary shrink-0" />
+                <Phone className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
                 <span>+91 70004 35413</span>
               </a>
 
-              {/* Phone 2 */}
               <a 
                 href="tel:+917987009323" 
-                className="flex items-center gap-2 hover:text-primary transition-colors group"
+                className="flex items-center gap-2 hover:text-indigo-400 transition-colors pl-5.5"
               >
-                <span className="h-4 w-4 text-primary shrink-0"></span>
                 <span>+91 79870 09323</span>
               </a>
             </div>
@@ -132,10 +142,11 @@ export default function Footer() {
         </div>
 
         {/* Bottom Copyright Bar */}
-        <div className="mt-12 border-t border-border/40 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+        <div className="mt-8 border-t border-zinc-800/60 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-500">
           <p>© {currentYear} HackSmiths. All rights reserved.</p>
-          <p className="flex items-center gap-1">
-            Engineered with <Heart className="h-3 w-3 text-red-500 fill-red-500" /> by HackSmiths Core Team
+          <p className="flex items-center gap-1.5">
+            <Terminal className="h-3 w-3 text-indigo-400" />
+            Engineered with <Heart className="h-3 w-3 text-rose-500 fill-rose-500" /> by HackSmiths Core Team
           </p>
         </div>
 

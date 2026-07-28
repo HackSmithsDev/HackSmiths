@@ -29,6 +29,7 @@ interface Application {
   id: string;
   email: string;
   fullName: string;
+  course: string;
   branch: string;
   semester: number;
   phone: string;
@@ -280,7 +281,9 @@ export default function MemberDetailPage() {
                 <span className="text-zinc-500 block">Academic Track</span>
                 <span className="text-zinc-300 font-semibold flex items-center gap-1 mt-0.5">
                   <GraduationCap className="h-3.5 w-3.5 text-indigo-400" />
-                  {application.branch} (Sem {application.semester})
+                  {application.course} - {application.branch}
+                  <br />
+                  (Sem {application.semester})
                 </span>
               </div>
               <div>

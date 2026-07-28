@@ -26,9 +26,9 @@ export default function AdminFooter() {
           {/* Cols 1 & 2: Brand & Overview */}
           <div className="space-y-4 lg:col-span-2">
             <Link href="/admin" className="inline-flex items-center gap-2.5 group">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full overflow-hidden border border-zinc-800 bg-zinc-900 transition-transform duration-300 group-hover:scale-105 shrink-0">
+              <div className="flex h-8 w-8 items-center justify-center overflow-hidden border border-zinc-800 bg-zinc-900 transition-transform duration-300 group-hover:scale-105 shrink-0">
                 <NextImage 
-                  src="/favicon.ico"
+                  src="/assets/images/hacksmiths-logo.png"
                   alt="HackSmiths Logo"
                   width={32}
                   height={32}

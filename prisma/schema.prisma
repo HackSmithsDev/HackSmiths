@@ -54,6 +54,7 @@ model Application {
   id                  String            @id @default(cuid())
   email               String            // Verified during Step 1 of /application
   fullName            String
+  course              String            // e.g. "B.Tech"
   branch              String            // e.g. "CSE"
   semester            Int               // e.g. "1"
   phone               String

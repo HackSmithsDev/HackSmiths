@@ -9,6 +9,7 @@ export async function POST(request: Request) {
     const {
       email,
       fullName,
+      course,
       branch,
       semester,
       phone,
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
     if (
       !email ||
       !fullName ||
+      !course ||
       !branch ||
       !semester ||
       !phone ||
@@ -61,6 +63,7 @@ export async function POST(request: Request) {
         where: { id: existingApplication.id },
         data: {
           fullName,
+          course,
           branch,
           semester: parsedSemester, // 👈 USE parsedSemester
           phone,
@@ -80,6 +83,7 @@ export async function POST(request: Request) {
         data: {
           email,
           fullName,
+          course,
           branch,
           semester: parsedSemester, // 👈 USE parsedSemester
           phone,

@@ -18,6 +18,7 @@ interface ApplicationMember {
   fullName: string;
   email: string;
   phone: string;
+  course: string;
   branch: string;
   semester: number;
   primaryDomain: string;
@@ -163,9 +164,10 @@ export default function MembersPage() {
                       <div className="text-[10px] text-zinc-600">{member.phone}</div>
                     </td>
 
-                    {/* Academic Branch / Semester */}
+                    {/* Academic Course / Branch / Semester */}
                     <td className="px-6 py-4 text-zinc-400 whitespace-nowrap">
-                      {member.branch}
+                      {member.course} - <strong className="text-zinc-200 font-mono">{member.branch}</strong>
+                      <br />
                       <div className="text-[11px] text-zinc-500">Sem {member.semester}</div>
                     </td>
 
