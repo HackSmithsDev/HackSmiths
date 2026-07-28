@@ -123,7 +123,7 @@ export default function AdminFooter() {
                 className="flex items-center gap-2 hover:text-indigo-400 transition-colors group"
               >
                 <Mail className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
-                <span className="truncate group-hover:underline">info@hacksmiths.dev</span>
+                <span className="truncate group-hover:underline">contact@hacksmiths.dev</span>
               </a>
 
               <a 
