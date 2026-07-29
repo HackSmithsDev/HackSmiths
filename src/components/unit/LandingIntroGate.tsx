@@ -10,7 +10,6 @@ interface LandingIntroGateProps {
 
 const BRAND_NAME = 'HACKSMITHS';
 
-// Properly typed Framer Motion Variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -35,24 +34,21 @@ const letterVariants: Variants = {
   },
 };
 
-// Safe SSR-compatible layout effect hook
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 export default function LandingIntroGate({ children }: LandingIntroGateProps) {
-  // 1. Initialize state synchronously on client mount to prevent DOM flashing
   const [showIntro, setShowIntro] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const hasSeenIntro = sessionStorage.getItem('hs_intro_seen');
-      return !hasSeenIntro; // Show intro immediately if user hasn't seen it
+      return !hasSeenIntro;
     }
-    return true; // Default to true on SSR to avoid leaking home content
+    return true;
   });
 
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [isVideoFinished, setIsVideoFinished] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Synchronously evaluate session storage before browser paints
   useIsomorphicLayoutEffect(() => {
     setIsMounted(true);
     const hasSeenIntro = sessionStorage.getItem('hs_intro_seen');
@@ -68,12 +64,35 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
     setShowIntro(false);
   };
 
-  // Called when video naturally finishes
   const handleVideoEnded = () => {
     setIsVideoFinished(true);
   };
 
-  // Auto-redirect 4 seconds after branding appears if user doesn't click
+  useEffect(() => {
+    if (showIntro && videoRef.current) {
+      const video = videoRef.current;
+      video.muted = true;
+      const playPromise = video.play();
+
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.warn('Autoplay prevented on production environment:', error);
+          setIsVideoFinished(true);
+        });
+      }
+    }
+  }, [showIntro, isMounted]);
+
+  useEffect(() => {
+    if (!showIntro || isVideoFinished) return;
+
+    const safetyTimer = setTimeout(() => {
+      setIsVideoFinished(true);
+    }, 8000);
+
+    return () => clearTimeout(safetyTimer);
+  }, [showIntro, isVideoFinished]);
+
   useEffect(() => {
     if (!isVideoFinished) return;
 
@@ -84,7 +103,6 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
     return () => clearTimeout(timer);
   }, [isVideoFinished]);
 
-  // Prevent flash during initial hydration render
   if (!isMounted) {
     return (
       <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
@@ -103,7 +121,7 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
             exit={{ opacity: 0, transition: { duration: 0.8, ease: 'easeInOut' } }}
             className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-black text-white"
           >
-            {/* 1. Fullscreen Background Video with Camera Zoom-Out & Dispersion Transition */}
+            {/* 1. Fullscreen Background Video */}
             <motion.div
               className="absolute inset-0 h-full w-full"
               animate={
@@ -123,6 +141,7 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
                 muted
                 playsInline
                 onEnded={handleVideoEnded}
+                onError={() => setIsVideoFinished(true)}
                 className="h-full w-full object-cover object-center pointer-events-none"
               >
                 <source src="/assets/videos/intro_vid.mp4" type="video/mp4" />
@@ -130,10 +149,10 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
               </video>
             </motion.div>
 
-            {/* Dark Gradient Vignette for high contrast */}
+            {/* Dark Vignette Overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/90 pointer-events-none" />
 
-            {/* Light Dispersion / Flare Ring on Video End */}
+            {/* Light Dispersion Ring */}
             <AnimatePresence>
               {isVideoFinished && (
                 <motion.div
@@ -145,10 +164,10 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
               )}
             </AnimatePresence>
 
-            {/* 2. Branding Overlay - Emerges out of the dispersion flare */}
+            {/* 2. Branding Overlay */}
             {isVideoFinished && (
               <div className="relative z-20 flex flex-col items-center justify-center text-center px-4">
-                {/* Logo with rounded vertices */}
+                {/* Logo */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.6, y: 20, filter: 'blur(12px)' }}
                   animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
@@ -165,15 +184,28 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
                   />
                 </motion.div>
 
-                {/* Animated Title: Left-to-Right Letter Reveal */}
+                {/* Animated Brand Name Title with Production-Safe CSS Gradient */}
                 <motion.h1
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
-                  className="flex text-5xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-600 md:text-8xl drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)] font-mono"
+                  className="flex flex-wrap justify-center text-5xl font-black tracking-widest text-white md:text-8xl drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)] font-mono"
+                  style={{
+                    backgroundImage: 'linear-gradient(to right, #22d3ee, #a5b4fc, #9333ea)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
                 >
                   {BRAND_NAME.split('').map((letter, index) => (
-                    <motion.span key={index} variants={letterVariants}>
+                    <motion.span
+                      key={index}
+                      variants={letterVariants}
+                      className="inline-block"
+                      style={{
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      }}
+                    >
                       {letter}
                     </motion.span>
                   ))}
@@ -191,11 +223,10 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
               </div>
             )}
 
-            {/* 3. Dynamic Action Button */}
+            {/* 3. Action Button */}
             <div className="absolute bottom-10 z-30 flex items-center justify-center">
               <AnimatePresence mode="wait">
                 {!isVideoFinished ? (
-                  /* While video plays: Skip / Continue chip */
                   <motion.button
                     key="skip-btn"
                     initial={{ opacity: 0, y: 10 }}
@@ -207,7 +238,6 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
                     <span>[ Continue ]</span>
                   </motion.button>
                 ) : (
-                  /* When video completes: Primary "Go to Home Page" CTA Button */
                   <motion.button
                     key="home-btn"
                     initial={{ opacity: 0, y: 15, scale: 0.9 }}
@@ -236,7 +266,6 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
         )}
       </AnimatePresence>
 
-      {/* Main Home Page Content - Hidden completely when intro is active to prevent glitching */}
       <div className={showIntro ? 'hidden' : 'block'}>
         <motion.div
           initial={{ opacity: 0 }}
