@@ -22,10 +22,10 @@ const containerVariants: Variants = {
 };
 
 const letterVariants: Variants = {
-  hidden: { opacity: 0, x: -20, filter: 'blur(10px)' },
+  hidden: { opacity: 0, y: 15, filter: 'blur(8px)' },
   visible: {
     opacity: 1,
-    x: 0,
+    y: 0,
     filter: 'blur(0px)',
     transition: { 
       duration: 0.4, 
@@ -37,16 +37,10 @@ const letterVariants: Variants = {
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 export default function LandingIntroGate({ children }: LandingIntroGateProps) {
-  const [showIntro, setShowIntro] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const hasSeenIntro = sessionStorage.getItem('hs_intro_seen');
-      return !hasSeenIntro;
-    }
-    return true;
-  });
-
+  const [showIntro, setShowIntro] = useState<boolean>(true);
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [isVideoFinished, setIsVideoFinished] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useIsomorphicLayoutEffect(() => {
@@ -68,37 +62,62 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
     setIsVideoFinished(true);
   };
 
+  // Robust iOS Safari Video Initialization
   useEffect(() => {
-    if (showIntro && videoRef.current) {
-      const video = videoRef.current;
-      video.muted = true;
-      const playPromise = video.play();
+    if (!showIntro || !isMounted) return;
 
-      if (playPromise !== undefined) {
-        playPromise.catch((error) => {
-          console.warn('Autoplay prevented on production environment:', error);
-          setIsVideoFinished(true);
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    const attemptPlay = () => {
+      video
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch((err) => {
+          console.warn('iOS Autoplay blocked or delayed:', err);
+          setIsPlaying(false);
         });
+    };
+
+    attemptPlay();
+
+    // Secondary attempt on loadeddata event for iOS WebKit
+    const handleLoadedData = () => {
+      if (video.paused) {
+        attemptPlay();
       }
-    }
+    };
+
+    video.addEventListener('loadeddata', handleLoadedData);
+    return () => {
+      video.removeEventListener('loadeddata', handleLoadedData);
+    };
   }, [showIntro, isMounted]);
 
+  // Safety timer that scales with video duration (minimum 15s)
   useEffect(() => {
     if (!showIntro || isVideoFinished) return;
 
     const safetyTimer = setTimeout(() => {
       setIsVideoFinished(true);
-    }, 8000);
+    }, 15000);
 
     return () => clearTimeout(safetyTimer);
   }, [showIntro, isVideoFinished]);
 
+  // Transition to main application after video finishes and branding displays
   useEffect(() => {
     if (!isVideoFinished) return;
 
     const timer = setTimeout(() => {
       handleIntroComplete();
-    }, 4000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, [isVideoFinished]);
@@ -140,29 +159,34 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
                 autoPlay
                 muted
                 playsInline
+                // @ts-ignore iOS WebKit legacy inline video execution flag
+                webkit-playsinline="true"
+                preload="auto"
                 onEnded={handleVideoEnded}
                 onError={() => setIsVideoFinished(true)}
                 className="h-full w-full object-cover object-center pointer-events-none"
               >
                 <source src="/assets/videos/intro_vid.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
               </video>
             </motion.div>
 
             {/* Dark Vignette Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/90 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/90 pointer-events-none" />
 
-            {/* Light Dispersion Ring */}
-            <AnimatePresence>
-              {isVideoFinished && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.3, filter: 'blur(20px)' }}
-                  animate={{ opacity: [0, 0.8, 0], scale: 2.2, filter: 'blur(40px)' }}
-                  transition={{ duration: 1.2, ease: 'easeOut' }}
-                  className="absolute h-96 w-96 rounded-full bg-gradient-to-r from-cyan-500/40 via-indigo-500/40 to-purple-600/40 pointer-events-none z-10"
-                />
-              )}
-            </AnimatePresence>
+            {/* Tap To Play Overlay for iOS Low Power Mode */}
+            {!isPlaying && !isVideoFinished && (
+              <button
+                onClick={() => {
+                  if (videoRef.current) {
+                    videoRef.current.play();
+                    setIsPlaying(true);
+                  }
+                }}
+                className="absolute z-40 rounded-full bg-white/10 backdrop-blur-md px-6 py-3 text-xs font-mono tracking-widest text-white border border-white/20 uppercase"
+              >
+                [ Tap to Play Intro ]
+              </button>
+            )}
 
             {/* 2. Branding Overlay */}
             {isVideoFinished && (
@@ -184,23 +208,18 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
                   />
                 </motion.div>
 
-                {/* Animated Brand Name Title with Production-Safe CSS Gradient */}
+                {/* iOS WebKit-Safe Gradient Title */}
                 <motion.h1
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
-                  className="flex flex-wrap justify-center text-5xl font-black tracking-widest text-white md:text-8xl drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)] font-mono"
-                  style={{
-                    backgroundImage: 'linear-gradient(to right, #22d3ee, #a5b4fc, #9333ea)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
+                  className="flex flex-wrap justify-center text-5xl font-black tracking-widest md:text-8xl font-mono"
                 >
                   {BRAND_NAME.split('').map((letter, index) => (
                     <motion.span
                       key={index}
                       variants={letterVariants}
-                      className="inline-block"
+                      className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-500"
                       style={{
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
@@ -223,7 +242,7 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
               </div>
             )}
 
-            {/* 3. Action Button */}
+            {/* 3. Action Buttons */}
             <div className="absolute bottom-10 z-30 flex items-center justify-center">
               <AnimatePresence mode="wait">
                 {!isVideoFinished ? (
@@ -233,9 +252,9 @@ export default function LandingIntroGate({ children }: LandingIntroGateProps) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
                     onClick={handleIntroComplete}
-                    className="flex items-center gap-2 backdrop-blur-md px-6 py-2.5 text-xs font-mono tracking-widest text-neutral-300 uppercase hover:border-indigo-400 hover:text-white hover:bg-black/80 transition-all cursor-pointer shadow-lg hover:shadow-indigo-500/20"
+                    className="flex items-center gap-2 backdrop-blur-md px-6 py-2.5 text-xs font-mono tracking-widest text-neutral-300 uppercase border border-white/10 rounded-lg hover:border-indigo-400 hover:text-white hover:bg-black/80 transition-all cursor-pointer shadow-lg hover:shadow-indigo-500/20"
                   >
-                    <span>[ Continue ]</span>
+                    <span>[ Skip Intro ]</span>
                   </motion.button>
                 ) : (
                   <motion.button
