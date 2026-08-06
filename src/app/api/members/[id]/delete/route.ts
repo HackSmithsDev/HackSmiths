@@ -6,13 +6,16 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-/**
- * DELETE /api/members/[id]/delete
- * Permanently removes a member application record from the database and sends a notification email.
- */
-export async function DELETE(_request: Request, { params }: RouteParams) {
+export async function DELETE(_request: Request, context: RouteParams) {
   try {
-    const { id } = await params;
+    const { id } = await context.params;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Application ID is required' },
+        { status: 400 }
+      );
+    }
 
     const existing = await prisma.application.findUnique({
       where: { id },
@@ -20,41 +23,41 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
 
     if (!existing) {
       return NextResponse.json(
-        { error: 'Member application not found' },
+        { error: 'Member application record not found' },
         { status: 404 }
       );
     }
 
-    // Attempt to notify applicant before deleting the record
+    // Attempt to send email, but swallow email-specific errors so deletion proceeds
     let emailSent = false;
     try {
       await sendFormDecision(
         existing.email,
         existing.fullName,
-        false, // approved = false
-        'Your member record and application data have been deleted.'
+        false,
+        'Your member record and application data have been permanently deleted.'
       );
       emailSent = true;
     } catch (emailError) {
-      console.error(`Failed to send deletion notice email to ${existing.email}:`, emailError);
+      console.error(`Email delivery failed for ${existing.email}:`, emailError);
     }
 
-    // Execute permanent deletion from database
+    // Execute permanent database deletion
     await prisma.application.delete({
       where: { id },
     });
 
     return NextResponse.json(
       { 
-        message: `Member ${id} hard-deleted permanently from database`,
+        message: `Member application ${id} deleted successfully`,
         emailSent,
       },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error hard-deleting member record:', error);
     return NextResponse.json(
-      { error: 'Failed to permanently delete member record' },
+      { error: error?.message || 'Failed to delete member record from database' },
       { status: 500 }
     );
   }

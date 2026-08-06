@@ -97,12 +97,15 @@ export default function MemberDetailPage() {
         body: JSON.stringify(bodyPayload || { notes }),
       });
 
-      if (!res.ok) throw new Error(`Failed to execute ${actionName}`);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || errData.message || `Failed to execute ${actionName}`);
+      }
 
       const result = await res.json();
-      const updatedApp = result.application;
+      const updatedApp = result.application || result;
       setApplication(updatedApp);
-      if (updatedApp.notes) setNotes(updatedApp.notes);
+      if (updatedApp.notes !== undefined) setNotes(updatedApp.notes || '');
       
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
@@ -113,7 +116,7 @@ export default function MemberDetailPage() {
     }
   };
 
-  // Real-time autosave on Admin Notes blur
+  // Fixed Notes autosave blur
   const handleNotesBlur = async () => {
     if (!id || !application || notes === (application.notes || '')) return;
 
@@ -128,10 +131,14 @@ export default function MemberDetailPage() {
         }),
       });
 
-      if (!res.ok) throw new Error('Failed to update notes.');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to update notes.');
+      }
 
       const result = await res.json();
-      setApplication(result.application);
+      const updatedApp = result.application || result;
+      setApplication(updatedApp);
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3000);
     } catch (err: any) {
@@ -141,20 +148,31 @@ export default function MemberDetailPage() {
     }
   };
 
+  // Hard Delete function with detailed error messaging & state cleanup
   const handleHardDelete = async () => {
+    if (!id) return;
     setActionLoading('delete');
+    
     try {
       const res = await fetch(`/api/members/${id}/delete`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
-      if (!res.ok) throw new Error('Failed to delete member record');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || errData.message || 'Failed to delete member record');
+      }
 
+      setShowDeleteModal(false);
       router.push('/admin/members');
+      router.refresh();
     } catch (err: any) {
       alert(err.message || 'Error deleting member record.');
+    } finally {
       setActionLoading(null);
-      setShowDeleteModal(false);
     }
   };
 
