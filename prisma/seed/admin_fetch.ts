@@ -4,19 +4,14 @@ import { PrismaClient, Role } from "../../src/generated/prisma";
 
 const ADMIN_USERS = [
   {
-    email: process.env.ADMIN_EMAIL || "admin@hacksmiths.dev",
-    password: process.env.ADMIN_PASSWORD || "Admin@123456",
+    email: process.env.ADMIN_EMAIL || "tushardewangan7759@gmail.com",
+    password: process.env.ADMIN_PASSWORD || "Tushar@6076",
     name: process.env.ADMIN_NAME || "HackSmiths Core Admin",
   },
   {
     email: "mohdaatifkhan2801@gmail.com",
     password: "A@tif2801",
     name: "Mohd Aatif Khan",
-  },
-  {
-    email: "singhantariksh212@gmail.com",
-    password: "Singh@212",
-    name: "Antriksh Singh",
   },
 ];
 

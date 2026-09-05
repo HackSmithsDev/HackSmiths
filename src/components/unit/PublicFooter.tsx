@@ -134,7 +134,7 @@ export default function Footer() {
                 href="tel:+917987009323" 
                 className="flex items-center gap-2 hover:text-indigo-400 transition-colors pl-5.5"
               >
-                <span>+91 79870 09323</span>
+                <span>+91 70249 66060</span>
               </a>
             </div>
           </div>
