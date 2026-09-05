@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://www.hacksmiths.dev/assets/hacksmiths-logo.png" width="180" alt="HackSmiths Logo"/>
+<img src="https://www.hacksmiths.dev/assets/images/hacksmiths-logo.png" width="180" alt="HackSmiths Logo"/>
 
 # HackSmiths
 
